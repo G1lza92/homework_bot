@@ -36,7 +36,7 @@ logger.addHandler(handler)
 
 
 def send_message(bot, message):
-    """Отправка сообщений в Телеграм"""
+    """Отправка сообщений в Телеграм."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info('Сообщение отправленно в чат.')
@@ -47,7 +47,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    """Запрашиваем статус домашней работы"""
+    """Запрашиваем статус домашней работы."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     try:
@@ -67,7 +67,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    """Проверяем корректность API"""
+    """Проверяем корректность API."""
     try:
         homeworks_list = response['homeworks']
     except KeyError as error:
@@ -75,11 +75,11 @@ def check_response(response):
         logger.error(message)
         raise KeyError(message)
     if len(homeworks_list) == 0:
-        message = f'Домашних работ нет'
+        message = 'Домашних работ нет'
         logger.error(message)
         raise SystemError(message)
     if homeworks_list is None:
-        message = f'В ответе API нет словаря homeworks'
+        message = 'В ответе API нет словаря homeworks'
         logger.error(message)
         raise SystemError(message)
     if not isinstance(homeworks_list, list):
@@ -90,7 +90,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Парсинг инфо о домашней работе"""
+    """Парсинг инфо о домашней работе."""
     try:
         homework_name = homework.get('homework_name')
     except KeyError as error:
@@ -106,21 +106,21 @@ def parse_status(homework):
 
     verdict = HOMEWORK_STATUSES[homework_status]
     if verdict is None:
-        message = f'Неизвестный статус домашней работы'
+        message = 'Неизвестный статус домашней работы'
         logger.error(message)
         raise SystemError(message)
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
 def check_tokens():
-    """Проверка доступности обязательных переменных окружения"""
+    """Проверка доступности обязательных переменных окружения."""
     return all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, PRACTICUM_TOKEN])
 
 
 def main():
-    """Основная логика работы бота"""
+    """Основная логика работы бота."""
     if not check_tokens():
-        logger.critical(f'отсутствие обязательных переменных окружения')
+        logger.critical('Отсутствие обязательных переменных окружения')
         raise SystemExit('Остановка программы')
 
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
