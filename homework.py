@@ -1,9 +1,7 @@
-from email import message
 import logging
 import os
 import time
 from http import HTTPStatus
-from urllib import response
 
 import requests
 import telegram
@@ -20,7 +18,6 @@ RETRY_TIME = 6
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
-
 HOMEWORK_STATUSES = {
     'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
     'reviewing': 'Работа взята на проверку ревьюером.',
@@ -36,6 +33,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler()
 logger.addHandler(handler)
+
 
 def send_message(bot, message):
     """Отправка сообщений в Телеграм"""
@@ -66,6 +64,7 @@ def get_api_answer(current_timestamp):
         logger.info('Эндпоинт получен')
         response = response.json()
     return response
+
 
 def check_response(response):
     """Проверяем корректность API"""
