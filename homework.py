@@ -136,7 +136,7 @@ def main():
             error_message = f'Сбой в работе программы: {error}'
             logger.error(error_message)
             if error_message != old_error_message:
-                bot.send_message(TELEGRAM_CHAT_ID, error_message)
+                send_message(bot, error_message)
                 old_error_message = error_message
         finally:
             time.sleep(RETRY_TIME)
