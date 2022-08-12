@@ -70,7 +70,7 @@ def check_response(response):
     """Проверяем корректность API."""
     if not isinstance(response, dict):
         raise TypeError('Ответ не словарь')
-    if 'current_date' not in response:
+    if 'current_date' not in response.keys():
         raise KeyError('Отсутствует поле "current_date"')
     homeworks_list = response['homeworks']
     if not isinstance(homeworks_list, list):
@@ -113,6 +113,7 @@ def main():
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
     homework_status = ''
+    old_error_message = ''
 
     while True:
         try:
@@ -129,14 +130,14 @@ def main():
                 send_message(bot, message)
             else:
                 logger.debug('Обновления статуса нет')
+        except telegram.error as tg_error:
+            logger.error(f'Сбой при отправке сообщений: {tg_error}')
         except Exception as error:
-            message = f'Сбой в работе программы: {error}'
-            logger.error(message)
-            # Для Андрея - по твоему замечанию
-            # "Если после сбоя поменяется статус домашки,
-            # то сообщение об ошибке в чат мы не получим"
-            # я и не отправляю сообщение об ошибке в чат, я его просто логирую
-            # но в теории могу попробовать сделать =)
+            error_message = f'Сбой в работе программы: {error}'
+            logger.error(error_message)
+            if error_message != old_error_message:
+                bot.send_message(TELEGRAM_CHAT_ID, error_message)
+                old_error_message = error_message
         finally:
             time.sleep(RETRY_TIME)
 
