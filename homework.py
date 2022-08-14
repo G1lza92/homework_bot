@@ -121,7 +121,7 @@ def main():
             homeworks = check_response(response)
             if len(homeworks) == 0:
                 message = 'Проверенных домашних работ нет'
-                send_message(bot, message)
+                logger.info(message)
                 continue
             last_hmwrk_status = homeworks[0].get('status')
             if last_hmwrk_status != homework_status:
@@ -130,7 +130,7 @@ def main():
                 send_message(bot, message)
             else:
                 logger.debug('Обновления статуса нет')
-        except telegram.error as tg_error:
+        except exceptions.SendMessageFail as tg_error:
             logger.error(f'Сбой при отправке сообщений: {tg_error}')
         except Exception as error:
             error_message = f'Сбой в работе программы: {error}'
